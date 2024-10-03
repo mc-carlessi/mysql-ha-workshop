@@ -1,0 +1,79 @@
+{
+    "workshoptitle": "MySQL Enterprise Edition - Security Workshop - Instructor",
+    "include": {"starter-file.sql":"../../data-load/files/starter-file.sql",
+                "sample.json":"../../data-load/files/sample.json",
+                "step2.md":"../../data-load/files/step2.md"},
+    "help": "livelabs-help-**enterarea**_us@oracle.com",
+    "tutorials": [
+        {
+            "title": "Introduction",
+            "description": "The Introduction is always first. The title and contents menu title match for the Introduction.",
+            "filename": "../../introduction/introduction.md"
+        },
+        {
+            "title": "Lab 1: Create Virtual Cloud Network and Related Components",
+            "description": "Create Virtual Cloud Network and Related Components",
+            "filename": "../../create-vcn/create-vcn.md"
+        },
+        {
+            "title": "Lab 2: Create Linux Compute Instance",
+            "description": "Create Linux Compute Instance",
+            "filename": "../../create-compute/create-compute.md"
+        },
+        {
+            "title": "Lab 3: Create Compute Instance Pool",
+            "description": "Create Compute Instance Pool",
+            "filename": "../../create-pool/create-pool.md"
+        },
+        {
+            "title": "Lab 4: Setup Environment",
+            "description": "Setup Environment",
+            "filename": "../../setup/setup.md"
+        },
+        {
+            "title": "Lab 5: Install - MySQL Enterprise Edition",
+            "description": "Install - MySQL Enterprise Edition",
+            "filename": "../../install-ee/install-ee.md"
+        },
+        {
+            "title": "Lab 6: Verify MySQL Enterprise Edition",
+            "description": "Verify MySQL Enterprise Edition",
+            "filename": "../../verify-ee/verify-ee.md"
+        },
+        {
+            "title": "Lab 7: Setup LAMP Application ",
+            "filename": "../../lamp/lamp.md"
+        },
+        {
+            "title": "Lab 8: Security - MySQL Users",
+            "description": "Security - MySQL Users",
+            "filename": "../../security-user/security-user.md"
+        },
+        {
+            "title": "Lab 9: Security - MySQL Enterprise Audit",
+            "description": "Security - MySQL Enterprise Audit",
+            "filename": "../../security-audit/security-audit.md"
+        },
+        {
+            "title": "Lab 10: Security - MySQL Enterprise Transparent Data Encryption (TDE)",
+            "description": "Security - MySQL Enterprise Transparent Data Encryption (TDE)",
+            "filename": "../../security-tde/security-tde.md"
+        },
+        {
+            "title": "Lab 11: Security - MySQL Data Masking",
+            "description": "Security - MySQL Data Masking",
+            "filename": "../../security-masking/security-masking.md"
+        },
+        {
+            "title": "Lab 12: Security - MySQL Firewall",
+            "description": "Security - MySQL Firewall",
+            "filename": "../../security-firewall/security-firewall.md"
+        },
+
+        {
+            "title": "Need Help?",
+            "description": "Solutions to Common Problems and Directions for Receiving Live Help",
+            "filename":"https://raw.githubusercontent.com/oracle/learning-library/master/common/labs/need-help/need-help-freetier.md"
+        }
+    ]
+}
