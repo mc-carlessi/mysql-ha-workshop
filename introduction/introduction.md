@@ -2,9 +2,9 @@
 
 ## About this Workshop
 
-Securing the data stored in your MySQL Server is key towards avoiding breaches and achieving Regulatory Compliance.  This workshop covers the installation, configuration and testing of 4 of the MySQL Security Based Enterprise Features.  We will go through how to setup and run Enterprise Audit, Enterprise Transparent Data Encryption, Enterprise FireWall and Enterprise Data Masking.
+Business Continuity is the key for modern services available 24x7. This workshop covers the installation, configuration and testing of replication and clustering using InnoDB ReplicaSet and InnoDB Cluster. 
 
-Estimated Workshop Time: 2 hours (This estimate is for the entire workshop - it is the sum of the estimates provided for each of the labs included in the workshop.)
+Estimated Workshop Time: 1 hours (This estimate is for the entire workshop - it is the sum of the estimates provided for each of the labs included in the workshop.)
 
 ## Prerequisite
 
@@ -14,22 +14,18 @@ For working on this workshop you will need a clean computer to run on.  We shoul
 
 In this workshop, you will learn how to work with
 
-- MySQL Enterprise Edition
-- MySQL Shell
-- MySQL Enterprise Audit
-- MySQL Enterprise Transparent Data Encryption
-- MySQL Enterprise Data Masking
-- MySQL Enterprise Firewall
+- MySQL InnODB ReplicaSet
+- MySQL InnoDB Cluster
 
 You may now **proceed to the next lab**
 
 ## Learn More
 
 - [MySQL Home Page](https://www.mysql.com/)
-- [MySQL Enterprise Audit](https://dev.mysql.com/doc/en/audit-log.html)
-- [MySQL Enterprise Transparent Data Encryption](https://dev.mysql.com/doc/en/innodb-data-encryption.html)
-- [MySQL Enterprise Data Masking](https://dev.mysql.com/doc/en/data-masking.html)
-- [MySQL Enterprise Firewall](https://dev.mysql.com/doc/en/firewall.html)
+- [MySQL InnoDB ReplicaSet introduction](https://dev.mysql.com/doc/refman/8.4/en/mysql-innodb-replicaset-introduction.html)
+- [MySQL InnoDB ReplicaSet](https://dev.mysql.com/doc/mysql-shell/8.4/en/mysql-innodb-replicaset.html)
+- [MySQL InnoDB Cluster introduction](https://dev.mysql.com/doc/refman/8.4/en/mysql-innodb-cluster-introduction.html)
+- [MySQL InnoDB Cluster](https://dev.mysql.com/doc/mysql-shell/8.4/en/mysql-innodb-cluster.html)
 
 ## Acknowledgements
 

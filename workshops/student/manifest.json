@@ -7,7 +7,7 @@
     "tutorials": [
         {
             "title": "Introduction",
-            "description": "The Introduction is always first. The title and contents menu title match for the Introduction.",
+            "description": "MySQL High Availability Workshop",
             "filename": "../../introduction/introduction.md"
         },
         {
@@ -25,31 +25,15 @@
             "filename": "../../lamp/lamp.md"
         },
         {
-            "title": "Lab 4: Security - MySQL Users",
-            "description": "Security - MySQL Users",
-            "filename": "../../security-user/security-user.md"
+            "title": "Lab 4: MySQL Replication with InnoDB ReplicaSet",
+            "description": "Easy replication",
+            "filename": "../../replicaset/replicaset.md"
         },
         {
-            "title": "Lab 5: Security - MySQL Enterprise Audit",
-            "description": "Security - MySQL Enterprise Audit",
-            "filename": "../../security-audit/security-audit.md"
+            "title": "Lab 5: MySQL High Availabiltiy with InnoDB Cluster",
+            "description": "Easy High Availability",
+            "filename": "../../innodb-cluster/innodb-cluster.md"
         },
-        {
-            "title": "Lab 6: Security - MySQL Enterprise Transparent Data Encryption (TDE)",
-            "description": "Security - MySQL Enterprise Transparent Data Encryption (TDE)",
-            "filename": "../../security-tde/security-tde.md"
-        },
-        {
-            "title": "Lab 7: Security - MySQL Data Masking",
-            "description": "Security - MySQL Data Masking",
-            "filename": "../../security-masking/security-masking.md"
-        },
-        {
-            "title": "Lab 8: Security - MySQL Firewall",
-            "description": "Security - MySQL Firewall",
-            "filename": "../../security-firewall/security-firewall.md"
-        },
-
         {
             "title": "Need Help?",
             "description": "Solutions to Common Problems and Directions for Receiving Live Help",
