@@ -16,11 +16,6 @@
             "filename": "../../install-ee/install-ee.md"
         },
         {
-            "title": "Lab 2: Verify MySQL Enterprise Edition",
-            "description": "Verify MySQL Enterprise Edition",
-            "filename": "../../verify-ee/verify-ee.md"
-        },
-        {
             "title": "Lab 3: Setup LAMP Application ",
             "filename": "../../lamp/lamp.md"
         },

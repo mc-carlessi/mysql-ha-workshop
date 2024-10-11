@@ -89,44 +89,39 @@ This approach let you configure more secure and flexible scripts.
     <copy>SHOW VARIABLES LIKE "%version%";</copy>
     ```
 
-3. InnoDB provides the best Storage Engine in the general use case. You can check if all thethere are tables in a different format (of course, excluding system schemas)
+3. InnoDB provides the best Storage Engine in the general use case. it's also the one required for ReplicaSet and InnoDB Cluster. You can check if all there are tables in a different format (of course, excluding system schemas) using this query
+
+    * First let's create a MyISAM table
     ```
-    <copy>SELECT table_schema table_name, engine FROM INFORMATION_SCHEMA.TABLES where engine <> 'InnoDB' and table_schema not in ('mysql','information_schema', 'sys', 'performance_schema', 'mysql_innodb_cluster_metadata');</copy>
+    <copy>CREATE TABLE employees.pets (id INT, pet varchar(50)) ENGINE=myisam;</copy>
+    ```
+    ```
+    <copy>INSERT INTO employees.pets values(1,'dog'),(2,'cat'),(2,'bunny');</copy>
+    ```
+    ```
+    <copy>SELECT * FROM employees.pets;</copy>
     ```
 
-4. You can check the amount of data inside all the databases  
+    * Then search the non-InnoDB tables
     ```
-    <copy>SELECT table_schema AS 'Schema', SUM( data_length ) / 1024 / 1024 AS 'Data MB', SUM( index_length ) / 1024 / 1024 AS 'Index MB', SUM( data_length + index_length ) / 1024 / 1024 AS 'Sum' FROM information_schema.tables GROUP BY table_schema ;</copy>
-    ```
-
-5. You can check the amount of data inside all tables in a specific database ('employees' in the example)  
-    ```
-    <copy>SELECT table_schema AS 'Schema', table_name, SUM( data_length ) / 1024 / 1024 AS 'Data MB', SUM( index_length ) / 1024 / 1024 AS 'Index MB', SUM( data_length + index_length ) / 1024 / 1024 AS 'Sum' FROM information_schema.tables WHERE table_schema='employees' GROUP BY table_name;</copy>
+    <copy>SELECT table_schema table_name, engine
+    FROM INFORMATION_SCHEMA.TABLES 
+    WHERE engine <> 'InnoDB' AND table_schema NOT IN ('mysql','information_schema', 'sys', 'performance_schema', 'mysql_innodb_cluster_metadata');</copy>
     ```
 
-6. You can check the size of tablespaces files for a specific database ('employees' in the example)  
+    * Now we can convert the table to innoDB format
     ```
-    <copy>SELECT name, space AS 'tablespace id', allocated_size /1024 /1024 AS 'size (MB)', encryption FROM innodb_tablespaces WHERE name LIKE 'employees/%';</copy>
-    ```
-
-7. The “\G” is like “;” with a different way to show results
-
-  **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>** 
-    ```
-    <copy>SHOW GLOBAL VARIABLES LIKE 'version%';</copy>
-    ```
-    ```
-    <copy>SHOW GLOBAL VARIABLES LIKE 'version%'\G</copy>
+    <copy>ALTER TABLE employees.pets ENGINE=innodb;</copy>
     ```
 
-8. Show connections
-
-  **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+4. It's a best practice and a requirement to have a Primary Key in each table. You can search tables without PK with this query
     ```
-    <copy>SHOW FULL PROCESSLIST;</copy>
+    <copy>SELECT i.TABLE_ID, t.NAME
+    FROM INFORMATION_SCHEMA.INNODB_INDEXES i JOIN INFORMATION_SCHEMA.INNODB_TABLES t ON (i.TABLE_ID = t.TABLE_ID)
+    WHERE i.NAME='GEN_CLUST_INDEX';</copy>
     ```
 
-9. You can now exit
+5. You can now exit to continue our labs
     ```
     <copy>\q</copy>
     ```

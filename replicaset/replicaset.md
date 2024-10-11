@@ -14,13 +14,11 @@ In this lab, you will:
 * Have that server act as a Replica
 
 
-## Task 1: Prepare Replica (mysql2)
+## Task 1: Prepare replica server (mysql2)
 
-> **Note:**
- * Server: mysql2
- * mysql2 doesn't have binaries installed, so first part of the lab installs them. This is the same to first installation of mysql-advanced on mysql1
+> **Note:** Please be sure that you work on teh right server
 
-1. Open an SSH client to app-srv
+1. Open a second SSH client to app-srv
     ```
     <span style="color:green">shell></span> <copy>ssh -i <private_key_file> opc@<your_compute_instance_ip></copy>
     ```
@@ -30,22 +28,53 @@ In this lab, you will:
     <span style="color:green">shell-app-srv$</span> <copy>ssh -i $HOME/sshkeys/id_rsa_mysql2 opc@mysql2</copy>
     ```
 
-3. Execute below script that replicate what we did in manual installation lab (create mysqluser/mysqlgrp, folders and install binaries)
+3. Install MySQL Server and MySQL Shell using rpms
     ```
-    <span style="color:green">shell-mysql2></span> <copy>/workshop/support/MySQL_Replication___Prepare_replica_server.sh</copy>
+    <span style="color:green">shell-mysql2></span> <copy>sudo yum -y install /workshop/linux/MySQL_server_rpms/*.rpm</copy>
     ```
     ```
-    <span style="color:green">shell-mysql2></span> <copy>sudo ls -l /mysql</copy>
+    <span style="color:green">shell-mysql2></span> <copy>sudo yum -y install /workshop/linux/mysql-shell*.rpm</copy>
     ```
 
-4. <span style="color:red">Close and reopen the SSH connection to mysql2 server</span> to let opc user have the new group.
+4.	Start your new mysql instance
 
+ **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
     ```
-    <span style="color:green">shell-mysql2></span> <copy>exit</copy>
+    <copy>sudo systemctl start mysqld</copy>
     ```
+
+5.	Retrieve root password for first login:
+
+  **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
     ```
-    <span style="color:green">shell-app-srv$</span> <copy>ssh -i $HOME/sshkeys/id_rsa_mysql2 opc@mysql2</copy>
+    <copy>sudo grep -i 'temporary password' /var/log/mysqld.log</copy>
     ```
+
+6. Login to the the mysql-enterprise and change temporary password
+
+    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
+     ```
+    <copy>mysqlsh root@localhost</copy>
+    ```
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
+    <copy>ALTER USER 'root'@'localhost' IDENTIFIED BY 'Welcome1!';</copy>
+    ```
+
+7.	Create a new administrative user called 'admin' with remote access and full privileges
+
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
+    <copy>CREATE USER 'admin'@'%' IDENTIFIED BY 'Welcome1!';</copy>
+    ```
+
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
+    <copy>GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%' WITH GRANT OPTION;</copy>
+    ```
+
+8. Keep this connection open to use it later on
+
 
 ## Task 2: Create Replica
 > **Note:**
@@ -63,6 +92,39 @@ In this lab, you will:
     ```
     <span style="color:green">shell-app-srv$</span> <copy>ssh -i $HOME/sshkeys/id_rsa_mysql2 opc@mysql2</copy>
     ```
+
+2. Open MySQL Shell and switch to javascript command mode
+    ```
+    <span style="color:green">shell-app-srv$</span> <copy>mysqlsh</copy>
+    ```
+    ```
+    <span style="color:green">shell-app-srv$</span> <copy>\js</copy>
+    ```
+
+3. Configure primary (source) and secondary (replica) instances to be used for replication, with a dedicated account
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
+    <copy>dba.configureReplicaSetInstance('admin@mysql1', {clusterAdmin: "'rsadmin'@'%'"});</copy>
+    ```
+
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
+    <copy>dba.configureReplicaSetInstance('admin@mysql2', {clusterAdmin: "'rsadmin'@'%'"});</copy>
+    ```
+
+4. Connect to primary instance
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
+    <copy>\c admin@mysql1</copy>
+    ```
+
+5. Create
+
+
+
+
+
+
 
 2. <span style="color:red">mysql1 (source):</span> Create a backup of source in the shared folder to easily restore on the replica:
     * take a full backup of the source using MySQL Enterprise Backup in your NFS folder /workshop/backups:

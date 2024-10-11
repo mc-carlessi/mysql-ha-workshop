@@ -40,7 +40,7 @@ Pay attention to the prompt, to know where execute the commands
 ## Task 1: Install MySQL Enterprise Edition using Linux RPM's
 
 
-1. Connect to **myserver** instance using Cloud Shell (**Example:** ssh -i ~/.ssh/id_rsa opc@132.145.17….)
+1. Connect to **app-srv** instance
 
     ```
     <copy>ssh -i ~/.ssh/id_rsa opc@<your_compute_instance_ip></copy>
@@ -48,44 +48,46 @@ Pay attention to the prompt, to know where execute the commands
 
     ![CONNECT](./images/ssh-login-2.png " ")
 
+2. We install MySQL Server in a dedicated machine. 
 
-2. We have the required software available in **/workshop** directory. But in security perspective, it's important to install only the software that is required. For this reason create a directory called not_needed and move there the rpms that we don't need
+  * Let's connect to mysql1 server
+    ```
+    <span style="color:green">shell-app-srv$</span> <copy>ssh -i $HOME/sshkeys/id_rsa_mysql1 opc@mysql1</copy>
+    ```
 
-  - Let's create the new directory  
-  **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>**  
-      ```
-      <copy>cd /workshop</copy>
-      ```
-  **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>**  
-      ```
-      <copy>mkdir not_needed</copy>
-      ```
+  * verify that you are connected to mysql1
 
-  - Move the devel package that contains development header files and libraries for MySQL database client applications  
-  **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>**  
-      ```
-      <copy>mv mysql-commercial-devel* not_needed/</copy>
-      ```
+    ```
+    <span style="color:green">shell-app-srv$</span> <copy>hostname</copy>
+    ```
 
-  - Move the MySQL Router package, because is usually not installed in the mysql servers, but in the application servers  
-  **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>**  
-      ```
-      <copy>mv mysql-router-commercial* not_needed/</copy>
-      ```
+We have the required software available in **/workshop** directory.
 
-3. You can see that the only packages are server and clients.
+3. Now install the RPM's from /workshop/linux/MySQL_server_rpms.
 
  **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
-    ```
-    <copy>ls -l</copy>
-    ```
+  ```
+  <copy>cd /workshop/linux/MySQL_server_rpms</copy>
+  ```
+  ```
+  <copy>ls -l</copy>
+  ```
+  ```
+  <copy>sudo yum -y install *.rpm</copy>
+  ```
 
-3. Now install the RPM's.
+4. Now we install the new MySQL Shell client rpm.
 
  **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
-    ```
-    <copy>sudo yum -y install *.rpm</copy>
-    ```
+  ```
+  <copy>cd /workshop/linux/</copy>
+  ```
+  ```
+  <copy>ls -l mysql-shell*.rpm</copy>
+  ```
+  ```
+  <copy>sudo yum -y install mysql-shell*.rpm</copy>
+  ```
 
 
 ## Task 2: Start and test MySQL Enterprise Edition Install
@@ -144,7 +146,6 @@ Pay attention to the prompt, to know where execute the commands
     <copy>\status</copy>
     ```
 
-
 7.	Create a new administrative user called 'admin' with remote access and full privileges
 
  **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
@@ -194,13 +195,83 @@ Pay attention to the prompt, to know where execute the commands
 
   **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
     ```
-    <copy>cd /workshop/database</copy>
+    <copy>cd /workshop/databases/employees/</copy>
     ```
 
   **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
     ```
     <copy>mysqlsh admin@127.0.0.1 < ./employees.sql</copy>
     ```
+
+2. Create now a generic user with access to our sample database
+
+  **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
+    ```
+    <copy>mysqlsh admin@127.0.0.1</copy>
+    ```
+
+  **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
+
+    ```
+    <copy>CREATE USER appuser@'%' IDENTIFIED BY 'Welcome1!';</copy>
+    ```
+
+    ```
+    <copy>GRANT ALL ON employees.* TO appuser@'%';</copy>
+    ```
+
+## Task 4: Learn Useful SQL Statements
+
+1. You can check the values of a specific variable, like the version of your server to know if it's updated to last release or not  
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>** 
+    ```
+    <copy>SHOW VARIABLES LIKE "%version%";</copy>
+    ```
+
+2. InnoDB provides the best Storage Engine in the general use case. it's also the one required for ReplicaSet and InnoDB Cluster. You can check if all there are tables in a different format (of course, excluding system schemas) using this query
+
+    * First let's create a MyISAM table
+    ```
+    <copy>CREATE TABLE employees.pets (id INT, pet varchar(50)) ENGINE=myisam;</copy>
+    ```
+    ```
+    <copy>INSERT INTO employees.pets values(1,'dog'),(2,'cat'),(2,'bunny');</copy>
+    ```
+    ```
+    <copy>SELECT * FROM employees.pets;</copy>
+    ```
+
+    * Then search the non-InnoDB tables
+    ```
+    <copy>SELECT table_schema table_name, engine
+    FROM INFORMATION_SCHEMA.TABLES 
+    WHERE engine <> 'InnoDB' AND table_schema NOT IN ('mysql','information_schema', 'sys', 'performance_schema', 'mysql_innodb_cluster_metadata');</copy>
+    ```
+
+    * Now we can convert the table to innoDB format
+    ```
+    <copy>ALTER TABLE employees.pets ENGINE=innodb;</copy>
+    ```
+
+3. It's a best practice and a requirement to have a Primary Key in each table. You can search tables without PK with this query
+    ```
+    <copy>SELECT i.TABLE_ID, t.NAME
+    FROM INFORMATION_SCHEMA.INNODB_INDEXES i JOIN INFORMATION_SCHEMA.INNODB_TABLES t ON (i.TABLE_ID = t.TABLE_ID)
+    WHERE i.NAME='GEN_CLUST_INDEX';</copy>
+    ```
+
+4. You can now exit from MySQL Shell
+
+    ```
+    <copy>\q</copy>
+    ```
+
+5. Close now your connection to mysql1, to return on app-srv
+
+    ```
+    <copy>exit</copy>
+    ```
+
 You may now **proceed to the next lab**
 
 ## Learn More
