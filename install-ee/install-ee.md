@@ -281,5 +281,5 @@ You may now **proceed to the next lab**
 
 ## Acknowledgements
 
-* **Author** - Dale Dasker, MySQL Solution Engineering
+* **Author** - Marco Carlessi, MySQL Solution Engineering
 * **Last Updated By/Date** - Perside Foster, MySQL Solution Engineering, August 2024

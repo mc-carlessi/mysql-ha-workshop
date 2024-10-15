@@ -125,124 +125,71 @@ In this lab, you will be guided through the following tasks:
 
 ## Task 3: Create MySQL PHP connect app
 
-1. Create config.php
-
-    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>**
-    ```bash
-    <copy>cd /var/www/html</copy>
-    ```
-
-    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>**
-    ```bash
-    <copy>sudo nano config.php</copy>
-    ```
-
-2. Add the following code to the editor. If needed, please update DB_SERVER with the MySQL DB IP address, the username and password then save the file (ctr + o) (ctl + x)
-
-    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>**
-     ```bash
-        <copy><?php
-    // Database credentials
-    define('DB_SERVER', 'mysql1');// MDS server IP address
-    define('DB_USERNAME', 'admin');
-    define('DB_PASSWORD', 'Welcome1!');
-    define('DB_NAME', 'mysql');
-    //Attempt to connect to MySQL database
-    $link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
-    // Check connection
-    if($link === false){
-        die("ERROR: Could not connect. " . mysqli_connect_error());
-    }
-    // Print host information
-    echo 'Successfull Connect.';
-    echo 'Host info: ' . mysqli_get_host_info($link);
-    ?>
-    </copy>
-    ```
-
-    - Test Config.php on Web sever http://150.230..../config.php
-
-3. Create dbtest.php
+1. Create dbtest.php file
 
     **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>**
     ```bash
     <copy>sudo nano dbtest.php</copy>
     ```
 
-4. Add the following code to the editor and save the file (ctr + o) (ctl + x)
+2. Add the following code to the editor and save the file (ctr + o) (ctl + x)
 
     **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>**
     ```bash
     <copy>
+    <!DOCTYPE html>
+    <html>
+    <body>
+
     <?php
-        require_once "config.php";
-        $query = "SHOW DATABASES;";
+    $DB_SERVER='mysql1:3306';
+    $DB_USERNAME='appuser';
+    $DB_PASSWORD='Welcome1!';
+    $DB_NAME='employees';
+
+    $retries = 20;
+
+    $i=0;
+    while ($i <= $retries) {
+    $link = mysqli_connect($DB_SERVER, $DB_USERNAME, $DB_PASSWORD, $DB_NAME);
+    if($link === false){
+        if($i <= $retries) {
+        sleep(1);
+        $i++;
+        } else {
+        break;
+        }
+    } else {
+        echo 'Connection info: <b>' . mysqli_get_host_info($link) .'</b><br>';
+        echo "Retries: " . $i . "<br>";
+        $query = "SELECT @@hostname";
         if ($stmt = $link->prepare($query)) {
             $stmt->execute();
-            $stmt->bind_result($user);
-            echo "<table>";
-            echo "<tr>";
-            echo "<th>user</th>";
-            echo "</tr>";
-            while ($stmt->fetch()) {
-            echo "<tr>";
-            echo "<td>" . $user ."</td>";
-            echo "</tr>";
-            }
-            $stmt->close();
+            $stmt->bind_result($hostname);
+            $stmt->fetch();
+            echo "Hostname: <b>" . $hostname ."</b><br>";
         }
+        $stmt->close();
+        break;
+    }
+
+    if($link === false){
+    die("ERROR: Could not connect. " . mysqli_connect_error());
+    }
+
+    }
     ?>
+
+    </body>
+    </html>
     </copy>
     ```
 
-5. From your local  machine connect to dbhwtest.php
+3. From your local  machine connect to dbtest.php. Application just return connection info
 
     Example: http://129.213.167..../dbtest.php  
 
-## TASK 4: Add Employee Web App to server
 
-1. Download application code
-
-    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>**
-    ```bash
-    <copy> sudo wget https://objectstorage.us-ashburn-1.oraclecloud.com/p/4joJKyI1NFAXNImd1V-zAV0kOb7pIauzy8QKjMK4BbpBTcYVfkxoAH7HB3P0brMK/n/idazzjlcjqzj/b/mysql_security/o/emp_apps.zip</copy>
-    ```
-
-2. unzip Application code
-
-    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>**
-    ```bash
-    <copy>sudo unzip emp_apps.zip</copy>
-    ```
-
-    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>**
-    ```bash
-    <copy>cd emp_apps</copy>
-    ```
-
-3. Replace the "DB\_SERVER" to **mysql1** and "DB\_USERNAME" to **appuser** in config.php file and save the file.
-
-    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>**
-    ```bash
-    <copy>sudo nano config.php</copy>
-    ```
-
-    Here how it looks after the changes
-
-    ```php
-    <?php
-    // Database credentials
-    define('DB_SERVER', 'mysql1');// MDS server IP address
-    define('DB_USERNAME', 'appuser');
-    define('DB_PASSWORD', 'Welcome1!');
-    define('DB_NAME', 'employees');
-    ```
-
-4. Run the application as follows:
-
-    http://computeIP/emp_apps/list_employees.php
-
-    ![MDS](./images/emp-list.png "emp-list-php")
 
 You may now **proceed to the next lab**
 
