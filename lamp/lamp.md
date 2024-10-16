@@ -147,7 +147,7 @@ In this lab, you will be guided through the following tasks:
     $DB_PASSWORD='Welcome1!';
     $DB_NAME='employees';
 
-    $retries = 20;
+    $retries = 30;
 
     $i=0;
     while ($i <= $retries) {

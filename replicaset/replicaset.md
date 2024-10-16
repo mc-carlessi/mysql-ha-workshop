@@ -292,21 +292,28 @@ In this lab, you will:
     <copy>sudo systemctl start mysqlrouter</copy>
     ```
 
-5. Verify MySQL Router listening ports
+5. Enable MySQL Router automatic start
+
+    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
+     ```
+    <copy>sudo systemctl enable mysqlrouter</copy>
+    ```
+
+6. Verify MySQL Router listening ports
 
     **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
      ```
     <copy>netstat -an | grep 644</copy>
     ```
 
-6. Install on app-srv the MySQL client and MySQL Shell to test MySQL Router
+7. Install on app-srv the MySQL client and MySQL Shell to test MySQL Router
 
     **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
      ```
     <copy>sudo yum install -y /workshop/linux/client/*.rpm</copy>
     ```
 
-7. Connect to read/write port and verify how it works
+8. Connect to read/write port and verify how it works
 
     **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
      ```
@@ -338,7 +345,7 @@ In this lab, you will:
     <copy>\q</copy>
     ```
 
-8. Connect to read only port and verify how it works (please note that writes return an error)
+9. Connect to read only port and verify how it works (please note that writes return an error)
 
     **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
      ```
@@ -370,7 +377,7 @@ In this lab, you will:
     <copy>\q</copy>
     ```
 
-9. Now we test primary/secondary switchover. First Reconnect to read/write port
+10. Now we test primary/secondary switchover. First Reconnect to read/write port
 
     **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
      ```
@@ -382,7 +389,7 @@ In this lab, you will:
     <copy>select @@hostname;</copy>
     ```
 
-9. Return to admin mysqlsh and switch primary and secondary
+11. Return to admin mysqlsh and switch primary and secondary
 
     **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
     ```
@@ -394,7 +401,7 @@ In this lab, you will:
     <copy>rs.status()</copy>
     ```
 
-10. Switch to appuser connection and retry to use it (first connection fails)
+12. Switch to appuser connection and retry to use it (first connection fails)
 
     **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
     ```
@@ -416,14 +423,34 @@ In this lab, you will:
     <copy>select * from employees.pets;</copy>
     ```
 
+13. You can now close the appuser connection
+
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
+    <copy>\q</copy>
+    ```
+    ```
+
+
 ## Task 5: Connect PHP application to router
 
-1. Edit dbtest.php application and configure it to use localhost and port 6446
+1. Edit dbtest.php application on app-srv server and configure it to use localhost and port 6446
 
     **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>**
     ```bash
     <copy>sudo nano /var/www/html/dbtest.php</copy>
     ```
+
+    > Expected change
+    ```
+    <?php
+    // Database credentials
+    define('DB_SERVER', '127.0.0.1:6446');
+    define('DB_USERNAME', 'appuser');
+    define('DB_PASSWORD', 'Welcome1!');
+    define('DB_NAME', 'employees');
+    ```
+
 
 2. From your local  machine connect to dbtest.php. Note that you are connected to mysql2
 
@@ -440,11 +467,17 @@ In this lab, you will:
     ```
     <copy>rs.status()</copy>
     ```
-4. From your local  machine connect to dbtest.php. Note that you are connected to mysql1
+
+4. Refresh dbtest.php page and note that you are connected to mysql1
 
     Example: http://129.213.167..../dbtest.php
 
+5. You can now close the MySQL Shell connection
 
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
+    <copy>\q</copy>
+    ```
 
 ## Acknowledgements
 * **Author** - Marco Carlessi, MySQL Solution Engineering

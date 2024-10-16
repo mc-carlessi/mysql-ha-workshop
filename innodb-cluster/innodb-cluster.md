@@ -27,7 +27,7 @@ In this lab, you will:
     <span style="color:green">shell-app-srv$</span> <copy>mysqlsh admin@mysql1</copy>
     ```
 
-2. Search non InnoDB tables and if there are you must change them. <span style="color:red">For this lab just drop them</span>
+2. Search non InnoDB tables and if there are you must change them. We don't have them in our sample database, so it's an empty result.
     ```
     <span style="color:blue">mysql-primary></span> <copy>SELECT table_schema, table_name, engine, table_rows, (index_length+data_length)/1024/1024 AS sizeMB
     FROM information_schema.tables
@@ -40,6 +40,15 @@ In this lab, you will:
     <span style="color:blue">mysql-primary></span> <copy>SELECT i.TABLE_ID, t.NAME
     FROM INFORMATION_SCHEMA.INNODB_INDEXES i JOIN INFORMATION_SCHEMA.INNODB_TABLES t ON (i.TABLE_ID = t.TABLE_ID)
     WHERE i.NAME='GEN_CLUST_INDEX';</copy>
+    ```
+
+    > Output, where table-id is probably different in your installation 
+    ```
+    +----------+----------------+
+    | TABLE_ID | NAME           |
+    +----------+----------------+
+    |     1070 | employees/pets |
+    +----------+----------------+
     ```
 
 4. We created a table without primary key (employees.pets). Now we fix fix it. Becasue we have a column id, but it's not unique, we add a PK inside an invisible column
@@ -86,7 +95,17 @@ In this lab, you will:
 
 ## Task 2: Prepare instances for the cluster
 
-1. First we dissolve the existing replicaset.
+1. First we dissolve the existing replicaset. Rememebr to swith to \js mode and retrieve ReplicaSet connection  
+
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
+    <span style="color:blue">mysql-primary></span> <copy>\js</copy>
+    ```
+
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
+    <span style="color:blue">mysql-primary></span> <copy>rs=dba.getReplicaSet()</copy>
+    ```
 
     **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
     ```
@@ -108,7 +127,7 @@ In this lab, you will:
 
 3. Connect to <span style="color:red">mysql3</span> server through app-srv
     ```
-    <span style="color:green">shell-app-srv$</span> <copy>ssh -i $HOME/sshkeys/id_rsa_mysql2 opc@mysql2</copy>
+    <span style="color:green">shell-app-srv$</span> <copy>ssh -i $HOME/sshkeys/id_rsa_mysql3 opc@mysql3</copy>
     ```
 
 4. Install MySQL Server and MySQL Shell using rpms
@@ -159,10 +178,7 @@ In this lab, you will:
 8. Close the SSH session to mysql3 and return to app-srv. 
    **Keep** this connection **open on app-srv** to use it later on
 
-
-## Task 3: Create Cluster 
-
-1. Return to administrative connection and check mysql1 configuration (we may have or not errors)
+9. Return to administrative connection and check mysql1 configuration (we may have or not errors)
 
     **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
     ```
@@ -199,7 +215,8 @@ In this lab, you will:
     }
     ```
 
-2. In case of errors, we use MySQL Shell to fix them. We now force the configuration top create the a dedicated account just for cluster administration (please accept all changes and the reboot) 
+10. In case of errors, we use MySQL Shell to fix them.
+   We now **force the reconfiguration** to create the a dedicated account just for cluster administration (please accept all changes and the reboot) 
 
     ```
     <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>> <copy>dba.configureReplicaSetInstance('admin@mysql1', {clusterAdmin: "'csadmin'@'%'"});</copy>
@@ -238,7 +255,7 @@ In this lab, you will:
     }
     ```
 
-3. Repeat the command on mysql2 and mysql3
+11. Repeat the command on mysql2 and mysql3
 
     ```
     <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>> <copy>dba.configureReplicaSetInstance('admin@mysql2', {clusterAdmin: "'csadmin'@'%'"});</copy>
@@ -248,12 +265,14 @@ In this lab, you will:
     <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>> <copy>dba.configureReplicaSetInstance('admin@mysql3', {clusterAdmin: "'csadmin'@'%'"});</copy>
     ```
 
-4. It's now time to create the cluster. Connect to mysql1 with the new account
+## Task 3: Create Cluster 
+
+1. It's now time to create the cluster. Connect to mysql1 with the new account
     ```
     <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>> <copy>\connect csadmin@mysql1</copy>
     ```
 
-5. Create the cluster, using the option EVENTUAL for primary failover.
+2. Create the cluster, using the option EVENTUAL for primary failover.
    By default the cluster operate in BEFORE_ON_PRIMARY_FAILOVER, choose the option that better fits your SLA requirements
 
     ```
@@ -282,7 +301,7 @@ In this lab, you will:
      ```
 
 
-6. Verify cluster status (why "Cluster is NOT tolerant to any failures" ?)
+3. Verify cluster status (why "Cluster is NOT tolerant to any failures" ?)
     ```
     <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>> <copy>cluster.status()</copy>
     ```
@@ -293,13 +312,13 @@ In this lab, you will:
         "clusterName": "testCluster",
         "defaultReplicaSet": {
             "name": "default",
-            "primary": "mysql1",
+            "primary": "mysql1:3306",
             "ssl": "REQUIRED",
             "status": "OK_NO_TOLERANCE",
             "statusText": "Cluster is NOT tolerant to any failures.",
             "topology": {
                 "mysql1": {
-                    "address": "mysql1",
+                    "address": "mysql1:3306",
                     "memberRole": "PRIMARY",
                     "mode": "R/W",
                     "readReplicas": {},
@@ -311,14 +330,11 @@ In this lab, you will:
             },
             "topologyMode": "Single-Primary"
         },
-        "groupInformationSourceMember": "mysql1"
+        "groupInformationSourceMember": "mysql1:3306"
     }
      ```
 
-
-## Task 4: Add a second and third instance to the cluster
-
-1.  Add mysql2 instance to the cluster.
+4.  Add mysql2 instance to the cluster.
     Please note that this instance has a compatible data set, so the join possibly uses binary logs to align it
     ```
     <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>> <copy>cluster.addInstance('admin@mysql2')</copy>
@@ -338,7 +354,7 @@ In this lab, you will:
     ```
  
 
-2. Verify cluster status
+5. Verify cluster status
     ```
     <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>> <copy>cluster.status()</copy>
     ```
@@ -349,13 +365,13 @@ In this lab, you will:
         "clusterName": "testCluster",
         "defaultReplicaSet": {
             "name": "default",
-            "primary": "mysql1",
+            "primary": "mysql1:3306",
             "ssl": "REQUIRED",
             "status": "OK_NO_TOLERANCE",
             "statusText": "Cluster is NOT tolerant to any failures.",
             "topology": {
                 "mysql1": {
-                    "address": "mysql1",
+                    "address": "mysql1:3306",
                     "memberRole": "PRIMARY",
                     "mode": "R/W",
                     "readReplicas": {},
@@ -365,7 +381,7 @@ In this lab, you will:
                     "version": "8.4.3"
                 },
                 "mysql2": {
-                    "address": "mysql2",
+                    "address": "mysql2:3306",
                     "memberRole": "SECONDARY",
                     "mode": "R/O",
                     "readReplicas": {},
@@ -377,11 +393,11 @@ In this lab, you will:
             },
             "topologyMode": "Single-Primary"
         },
-        "groupInformationSourceMember": "mysql1"
+        "groupInformationSourceMember": "mysql1:3306"
     }
     ```
 
-3. Add the third instance to cluster
+6. Add the third instance to cluster
 
     ```
     <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>> <copy>cluster.addInstance('admin@mysql3')</copy>
@@ -407,7 +423,7 @@ In this lab, you will:
         The instance 'mysql3' was successfully added to the cluster.
         ```
 
-4. Verify cluster status, now with all three servers. Please check that **"status": "OK"** and **"primary": "mysql1"**
+7. Verify cluster status, now with all three servers. Please check that **"status": "OK"** and **"primary": "mysql1"**
     ```
     <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>> <copy>cluster.status()</copy>
     ```
@@ -418,13 +434,13 @@ In this lab, you will:
         "clusterName": "testCluster",
         "defaultReplicaSet": {
             "name": "default",
-            "primary": "mysql1",
+            "primary": "mysql1:3306",
             "ssl": "REQUIRED",
             "status": "OK",
             "statusText": "Cluster is ONLINE and can tolerate up to ONE failure.",
             "topology": {
                 "mysql1": {
-                    "address": "mysql1",
+                    "address": "mysql1:3306",
                     "memberRole": "PRIMARY",
                     "mode": "R/W",
                     "readReplicas": {},
@@ -434,7 +450,7 @@ In this lab, you will:
                     "version": "8.4.3"
                 },
                 "mysql2": {
-                    "address": "mysql2",
+                    "address": "mysql2:3306",
                     "memberRole": "SECONDARY",
                     "mode": "R/O",
                     "readReplicas": {},
@@ -444,7 +460,7 @@ In this lab, you will:
                     "version": "8.4.3"
                 },
                 "mysql3": {
-                    "address": "mysql3",
+                    "address": "mysql3:3306",
                     "memberRole": "SECONDARY",
                     "mode": "R/O",
                     "readReplicas": {},
@@ -456,14 +472,14 @@ In this lab, you will:
             },
             "topologyMode": "Single-Primary"
         },
-        "groupInformationSourceMember": "mysql1"
+        "groupInformationSourceMember": "mysql1:3306"
     }
     ```
 
-9. Now cluster is up and running, and we test it
+8. Now cluster is up and running, and we test it
 
 
-## Task 5: update MySQL Router to be used with cluster, and test it
+## Task 4: update MySQL Router to be used with cluster, and test it
 
 1.  Return to the second shell and reconfigure MySQL Router top be used with the new cluster. Because there is already a configuration, we override it with --force option.
 
@@ -503,31 +519,32 @@ In this lab, you will:
     <span style="color:blue">mysql-rw></span> <copy>\q</copy>
     ```
 
-5. Like for ReplicaSet, we can use the RO port for reads. RO ports is used in round robin, so let's test it executing the same read query multiple times (plese notes the server where we are connected)
+4. Like for ReplicaSet, we can use the RO port (6447) for reads. RO ports is used in round robin, so let's test it executing the same read query multiple times (plese notes the server where we are connected)
 
     ```
-    <span style="color:green">shell-app-srv$</span> <copy>mysqlsh appuser@127.0.0.1:6447 -e 'select @@hostname'</copy>
-    ```
-
-    ```
-    <span style="color:green">shell-app-srv$</span> <copy>mysqlsh appuser@127.0.0.1:6447 -e 'select @@hostname'</copy>
+    <span style="color:green">shell-app-srv$</span> <copy>mysqlsh appuser@127.0.0.1:6447 --mysql --table -e 'select @@hostname'</copy>
     ```
 
     ```
-    <span style="color:green">shell-app-srv$</span> <copy>mysqlsh appuser@127.0.0.1:6447 -e 'select @@hostname'</copy>
-    ```
-
-6. We can now test the failover. Connect to RW prot
-
-    ```
-    <span style="color:green">shell-app-srv$</span> <copy>mysqlsh appuser@127.0.0.1:6446</copy>
+    <span style="color:green">shell-app-srv$</span> <copy>mysqlsh appuser@127.0.0.1:6447 --mysql --table -e 'select @@hostname'</copy>
     ```
 
     ```
-    <span style="color:blue">mysql-rw></span> <copy>SELECT @@hostname, @@port;</copy>
+    <span style="color:green">shell-app-srv$</span> <copy>mysqlsh appuser@127.0.0.1:6447 --mysql --table -e 'select @@hostname'</copy>
     ```
 
-7. Return to administrative connection, and use it to kill the instance on mysql1.
+5. We can now test the failover. Connect to RW port.
+   We use here the standard mysql client that provides reconnecting options
+
+    ```
+    <span style="color:green">shell-app-srv$</span> <copy>mysql -u appuser -p -h127.0.0.1 -P6446</copy>
+    ```
+
+    ```
+    <span style="color:blue">mysql-rw></span> <copy>SELECT @@hostname;</copy>
+    ```
+
+6. Return to administrative connection, and use it to kill the instance on mysql1.
    To execute the kill command, use the mysqld process ID in stored in /var/run/mysqld/mysqld.pid file (here we can do it in a single command)
 
     ```
@@ -543,7 +560,7 @@ In this lab, you will:
     <span style="color:green">shell-mysql1></span> <copy>sudo kill -9 $( sudo cat /var/run/mysqld/mysqld.pid )</copy>
     ```
 
-8. Now <span style="color:red">return to mysql connection previously opened</span> and verify that reconnection happens. It may requires 15/20 seconds to be work, so repeat the command multiple times.
+7. Now <span style="color:red">return to mysql connection previously opened</span> and verify that reconnection happens. It may requires 15/20 seconds to be work, so repeat the command multiple times.
 
     ```
     <span style="color:blue">mysql-rw></span> <copy>SELECT @@hostname;</copy>
@@ -553,10 +570,10 @@ In this lab, you will:
     <span style="color:blue">mysql-rw></span> <copy>SELECT @@hostname;</copy>
     ```
 
-9. Return From the shell where you killed the instance use MySQL Shell to verify cluster status. Because mysql1 was killed, you need to reconnect
+8. Return From the shell where you killed the instance use MySQL Shell to verify cluster status. Because mysql1 was killed, you need to reconnect
 
     ```
-    <span style="color:green">shell-app-srv$</span> <copy>\c csadmin@mysql1</copy>
+    <span style="color:green">shell-app-srv$</span> <copy>mysqlsh csadmin@mysql1</copy>
     ```
 
     ```
@@ -571,7 +588,7 @@ In this lab, you will:
     <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>> <copy>cluster.status()</copy>
     ```
 
-10. We can also test the read/write split port (**6450**).
+9. We can also test the read/write split port (**6450**).
     To check teh full rules see ![here](https://dev.mysql.com/doc/mysql-router/9.0/en/router-read-write-splitting-statements.html).
     Return to appuser connection and close it
 
@@ -583,13 +600,13 @@ In this lab, you will:
     <span style="color:green">shell-app-srv$</span> <copy>mysqlsh appuser@127.0.0.1:6450</copy>
     ```
 
-10. Check where read query are executed
+10. Check where read only query are executed
 
     ```
     <span style="color:green">shell-app-srv$</span> <copy>select @@hostname;</copy>
     ```
 
-11. Check where non readonly transaction are executed
+11. Check where "write" transaction are executed
 
     ```
     <span style="color:green">shell-app-srv$</span> <copy>START TRANSACTION;</copy>
@@ -603,9 +620,9 @@ In this lab, you will:
     <span style="color:green">shell-app-srv$</span> <copy>COMMIT;</copy>
     ```
 
-## Task 6: Connect PHP application to router
+## Task 5: Connect PHP application to router
 
-1. From your local  machine connect to dbtest.php. Note that you are connected to mysql2
+1. From your local  machine connect to dbtest.php. Note the instance where you are now connected
 
     Example: http://129.213.167..../dbtest.php
 
@@ -621,7 +638,7 @@ In this lab, you will:
     <copy>cluster.status()</copy>
     ```
 
-3. From your local  machine connect to dbtest.php. Note that you are connected to mysql1
+3. From your local  machine connect to dbtest.php. Note that you are **immediately** connected to mysql1
 
     Example: http://129.213.167..../dbtest.php
 
