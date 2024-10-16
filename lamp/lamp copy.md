@@ -26,14 +26,13 @@ In this lab, you will be guided through the following tasks:
 
 1. If not already connected with SSH, on Command Line, connect to the Compute instance using SSH ... be sure replace the  "private key file"  and the "new compute instance ip"
 
-    <span style="color:green">shell></span> 
+    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>**
     ```bash
     <copy>ssh -i ~/.ssh/id_rsa opc@<your_compute_instance_ip></copy>
     ```
 
 2. Verify that you are now working on app-srv
 
-    <span style="color:green">shell></span> 
     ```bash
     <copy>hostname</copy>
     ```
@@ -42,21 +41,21 @@ In this lab, you will be guided through the following tasks:
 
     a. Install Apache
 
-    <span style="color:green">shell></span> 
+    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>**
     ```bash
     <copy>sudo yum install httpd -y </copy>
     ```
 
     b. Enable Apache
 
-    <span style="color:green">shell></span> 
+    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>**
     ```bash
     <copy>sudo systemctl enable httpd</copy>
     ```
 
     c. Start Apache
 
-    <span style="color:green">shell></span> 
+    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>**
     ```bash
     <copy>sudo systemctl restart httpd</copy>
     ```
@@ -71,49 +70,49 @@ In this lab, you will be guided through the following tasks:
 
     a. Install php:7.4
 
-    <span style="color:green">shell></span> 
+    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>**
     ```bash
     <copy> sudo dnf module install php:7.4 -y</copy>
     ```
 
     b. Install php libraries required by our application
 
-    <span style="color:green">shell></span> 
+    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>**
     ```bash
     <copy>sudo yum install php-cli php-mysqlnd php-zip php-gd php-mbstring php-xml php-json -y</copy>
     ```
 
     c. View installed php libraries for mysql
 
-    <span style="color:green">shell></span> 
+    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>**
     ```bash
     <copy>php -m |grep mysql</copy>
     ```
 
     d. View php version
 
-    <span style="color:green">shell></span> 
+    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>**
     ```bash
     <copy>php -v</copy>
     ```
 
     e. Restart Apache
 
-    <span style="color:green">shell></span> 
+    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>**
     ```bash
     <copy>sudo systemctl restart httpd</copy>
     ```
 
 2. Create test php file (info.php)
 
-    <span style="color:green">shell></span> 
+    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>**
     ```bash
     <copy>sudo nano /var/www/html/info.php</copy>
     ```
 
 3. Add the following code to the editor and save the file (ctr + o) (ctl + x)
 
-    <span style="color:green">shell></span> 
+    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>**
     ```bash
     <copy><?php
     phpinfo();
@@ -128,13 +127,13 @@ In this lab, you will be guided through the following tasks:
 
 1. Create dbtest.php file
 
-    <span style="color:green">shell></span> 
     ```bash
-    <copy>sudo nano dbtest.php</copy>
+    <span style="color:green">shell></span> <copy>sudo nano dbtest.php</copy>
     ```
 
 2. Add the following code to the editor and save the file (ctr + o) (ctl + x)
 
+    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>**
     ```bash
     <copy>
     <!DOCTYPE html>
@@ -143,7 +142,7 @@ In this lab, you will be guided through the following tasks:
 
     <?php
     // Connection info
-    $servername = "mysql1";
+    $servername = "127.0.0.1:6446";
     $username = "appuser";
     $password = "Welcome1!";
     $dbname = "employees";
@@ -182,8 +181,6 @@ In this lab, you will be guided through the following tasks:
             $stmt->execute();
             $stmt->bind_result($hostname);
             $stmt->fetch();
-            
-            // print the hostname of the connected instance
             echo "Hostname: <b>" . $hostname ."</b><br>";
         }
 

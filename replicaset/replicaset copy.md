@@ -19,65 +19,56 @@ In this lab, you will:
 > **Note:** Please be sure that you work on teh right server
 
 1. If you are not yet connected, open an SSH client to app-srv
-    
-    <span style="color:green">shell></span>
     ```
-    <copy>ssh -i <private_key_file> opc@<your_compute_instance_ip></copy>
+    <span style="color:green">shell></span> <copy>ssh -i <private_key_file> opc@<your_compute_instance_ip></copy>
     ```
 
 2. Connect to <span style="color:red">mysql2</span> server through app-srv
-    
-    <span style="color:green">shell$</span>
     ```
-    <copy>ssh -i $HOME/sshkeys/id_rsa_mysql2 opc@mysql2</copy>
+    <span style="color:green">shell-app-srv$</span> <copy>ssh -i $HOME/sshkeys/id_rsa_mysql2 opc@mysql2</copy>
     ```
 
 3. Install MySQL Server and MySQL Shell using rpms
-    
-    <span style="color:green">shell></span>
     ```
-    <copy>sudo yum -y install /workshop/linux/MySQL_server_rpms/*.rpm</copy>
+    <span style="color:green">shell-mysql2></span> <copy>sudo yum -y install /workshop/linux/MySQL_server_rpms/*.rpm</copy>
     ```
-    
-    <span style="color:green">shell></span>
     ```
-    <copy>sudo yum -y install /workshop/linux/mysql-shell*.rpm</copy>
+    <span style="color:green">shell-mysql2></span> <copy>sudo yum -y install /workshop/linux/mysql-shell*.rpm</copy>
     ```
 
 4.	Start your new mysql instance
 
-    <span style="color:green">shell></span>
+ **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
     ```
     <copy>sudo systemctl start mysqld</copy>
     ```
 
 5.	Retrieve root password for first login:
 
-    <span style="color:green">shell></span>
+  **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
     ```
     <copy>sudo grep -i 'temporary password' /var/log/mysqld.log</copy>
     ```
 
 6. Login to the the mysql-enterprise and change temporary password
 
-    <span style="color:green">shell></span> 
+    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
      ```
     <copy>mysqlsh root@localhost</copy>
     ```
-
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
     ```
     <copy>ALTER USER 'root'@'localhost' IDENTIFIED BY 'Welcome1!';</copy>
     ```
 
 7.	Create a new administrative user called 'admin' with remote access and full privileges
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
     ```
     <copy>CREATE USER 'admin'@'%' IDENTIFIED BY 'Welcome1!';</copy>
     ```
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
     ```
     <copy>GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%' WITH GRANT OPTION;</copy>
     ```
@@ -88,22 +79,16 @@ In this lab, you will:
 
 ## Task 2: Install MySQL client on app-srv
 1. Using the existing SSH connection, install theMySQL Client on app-srv
-    
-    <span style="color:green">shell></span>
     ```
-    <copy>ssh -i <private_key_file> opc@<your_compute_instance_ip></copy>
+    <span style="color:green">shell></span> <copy>ssh -i <private_key_file> opc@<your_compute_instance_ip></copy>
     ```
 
 3. Install MySQL client and MySQL Shell using rpms
-    
-    <span style="color:green">shell></span>
     ```
-    <copy>ls -l /workshop/linux/client/</copy>
+    <span style="color:green">shell-mysql2></span> <copy>ls -l /workshop/linux/client/</copy>
     ```
-
-    <span style="color:green">shell></span>
     ```
-    <copy>sudo yum install -y /workshop/linux/client/*.rpm</copy>
+    <span style="color:green">shell-mysql2></span> <copy>sudo yum install -y /workshop/linux/client/*.rpm</copy>
     ```
 
 4. Keep this SSH session open
@@ -116,37 +101,31 @@ In this lab, you will:
  * Some commands must run inside the source, other on replica: please read carefully the instructions
 
 1. Open MySQL Shell, enable history.save and switch to javascript command mode
-    
-    <span style="color:green">shell$</span>
     ```
-    <copy>mysqlsh</copy>
+    <span style="color:green">shell-app-srv$</span> <copy>mysqlsh</copy>
     ```
-    
-    <span style="color:blue">mysql></span>
     ```
-    <copy>\option --persist history.autoSave=true</copy>
+    <span style="color:blue">mysql></span> <copy>\option --persist history.autoSave=true</copy>
     ```
-    
-    <span style="color:blue">mysql></span>
     ```
-    <copy>\js</copy>
+    <span style="color:blue">mysql></span> <copy>\js</copy>
     ```
 
 2. Configure primary (source) and secondary (replica) instances to be used for replication, with a dedicated account (suggested password 'Welcome1!').  
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>>
-    ```js
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
     <copy>dba.configureReplicaSetInstance('admin@mysql1', {clusterAdmin: "'rsadmin'@'%'"});</copy>
     ```
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>>
-    ```js
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
     <copy>dba.configureReplicaSetInstance('admin@mysql2', {clusterAdmin: "'rsadmin'@'%'"});</copy>
     ```
 
-    > Output
-    
-    ```text
+> Output
+
+    ```
     Password for new account: *********
     Confirm password: *********
 
@@ -163,21 +142,20 @@ In this lab, you will:
 
 4. Connect to primary instance as rsadmin
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>>
-    ```js
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
     <copy>\c rsadmin@mysql1</copy>
     ```
 
 5. Create the ReplicaSet
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>>
-    ```js
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
     <copy>var rs = dba.createReplicaSet("myreplica")</copy>
     ```
 
-    > Output
-
-    ```text
+> Output
+    ```
     A new replicaset with instance 'mysql1:3306' will be created.
 
     * Checking MySQL instance at mysql1:3306
@@ -191,16 +169,14 @@ In this lab, you will:
     ReplicaSet object successfully created for mysql1:3306.
     Use rs.addInstance() to add more asynchronously replicated instances to this replicaset and rs.status() to check its status.
     ```
-    
+
 6. Check replica status
-    
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>>
-    ```js
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
     <copy>rs.status()</copy>
     ```
 
-    > Output
-
+> Output
     ```
     {
         "replicaSet": {
@@ -223,14 +199,13 @@ In this lab, you will:
 
 7. Add mysql2 as replica instance for the ReplicaSet. Please note that clone is used to copy data from mysql1 to mysql2, and that the user to connect to mysql2 is the one of the actual connection
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>>
-    ```js
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
     <copy>rs.addInstance('mysql2')</copy>
     ```
 
-    > Partial Output
-    
-    ```text
+> Partial Output
+    ```
     Adding instance to the replicaset...
 
     * Performing validation checks
@@ -247,15 +222,14 @@ In this lab, you will:
     ```
 
 8. Check the new replica status
-    
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>>
-    ```js
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
     <copy>rs.status()</copy>
     ```
 
-    > Output  
+> Output  
 
-    ```text
+    ```
     {
         "replicaSet": {
             "name": "myreplica",
@@ -298,163 +272,163 @@ In this lab, you will:
 1. Please use the second SSH session to app-srv, or open a second one if you closed it
 
 2. Install MySQL Router on app-srv
-    
-    <span style="color:green">shell></span> 
-    ```bash
+    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
+     ```
     <copy>sudo yum install -y /workshop/linux/mysql-router*.rpm</copy>
     ```
 
 3. Bootstrap MySQL Router. Insert rsadmin password when requested.
    We are now using the default ports.
 
-    <span style="color:green">shell></span> 
-    ```bash
+    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
+     ```
     <copy>sudo mysqlrouter --bootstrap rsadmin@mysql1 --user=mysqlrouter</copy>
     ```
 
 4. Start router
 
-    <span style="color:green">shell></span> 
-    ```bash
+    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
+     ```
     <copy>sudo systemctl start mysqlrouter</copy>
     ```
 
 5. Enable MySQL Router automatic start
 
-    <span style="color:green">shell></span> 
-    ```bash
+    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
+     ```
     <copy>sudo systemctl enable mysqlrouter</copy>
     ```
 
 6. Verify MySQL Router listening ports
 
-    <span style="color:green">shell></span> 
-    ```bash
+    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
+     ```
     <copy>netstat -an | grep 644</copy>
     ```
 
 7. Install on app-srv the MySQL client and MySQL Shell to test MySQL Router
 
-    <span style="color:green">shell></span> 
-    ```bash
+    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
+     ```
     <copy>sudo yum install -y /workshop/linux/client/*.rpm</copy>
     ```
 
 8. Connect to read/write port and verify how it works
 
-    <span style="color:green">shell></span> 
-    ```bash
+    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
+     ```
     <copy>mysqlsh appuser@127.0.0.1:6446</copy>
     ```
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
-    ```sql
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
     <copy>select @@hostname;</copy>
     ```
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
-    ```sql
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
     <copy>select * from employees.pets;</copy>
     ```
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
-    ```sql
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
     <copy>insert into employees.pets values(3,'hamster');</copy>
     ```
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
-    ```sql
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
     <copy>select * from employees.pets;</copy>
     ```
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
-    ```sql
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
     <copy>\q</copy>
     ```
 
 9. Connect to read only port and verify how it works (please note that writes return an error)
 
-    <span style="color:green">shell></span> 
-    ```bash
+    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
+     ```
     <copy>mysqlsh appuser@127.0.0.1:6447</copy>
     ```
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
-    ```sql
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
     <copy>select @@hostname;</copy>
     ```
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
-    ```sql
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
     <copy>select * from employees.pets;</copy>
     ```
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
-    ```sql
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
     <copy>insert into employees.pets values(4,'t-rex');</copy>
     ```
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
-    ```sql
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
     <copy>select * from employees.pets;</copy>
     ```
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
-    ```sql
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
     <copy>\q</copy>
     ```
 
 10. Now we test primary/secondary switchover. First Reconnect to read/write port
 
-    <span style="color:green">shell></span> 
-    ```absh
+    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
+     ```
     <copy>mysqlsh appuser@127.0.0.1:6446</copy>
     ```
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>> 
-    ```sql
+    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
+     ```
     <copy>select @@hostname;</copy>
     ```
 
 11. Return to admin mysqlsh and switch primary and secondary
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>>
-    ```js
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
     <copy>rs.setPrimaryInstance('mysql2')</copy>
     ```
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>>
-    ```js
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
     <copy>rs.status()</copy>
     ```
 
 12. Switch to appuser connection and retry to use it (first connection fails)
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
-    ```sql
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
     <copy>select @@hostname;</copy>
     ```
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
-    ```sql
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
     <copy>select @@hostname;</copy>
     ```
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
-    ```sql
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
     <copy>insert into employees.pets values(4,'horse');</copy>
     ```
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
-    ```sql
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
     <copy>select * from employees.pets;</copy>
     ```
 
 13. You can now close the appuser connection
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
-    ```sql
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
     <copy>\q</copy>
+    ```
     ```
 
 
@@ -462,22 +436,19 @@ In this lab, you will:
 
 1. Edit dbtest.php application on app-srv server and configure it to use localhost and port 6446
 
-    <span style="color:green">shell></span>
+    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>**
     ```bash
     <copy>sudo nano /var/www/html/dbtest.php</copy>
     ```
 
     > Expected change
-    
-    ```bash
+    ```
     <?php
     // Database credentials
     define('DB_SERVER', '127.0.0.1:6446');
     define('DB_USERNAME', 'appuser');
     define('DB_PASSWORD', 'Welcome1!');
     define('DB_NAME', 'employees');
-    ...
-
     ```
 
 
@@ -487,13 +458,13 @@ In this lab, you will:
 
 3. Return to admin mysqlsh and switch primary and secondary
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>>
-    ```js
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
     <copy>rs.setPrimaryInstance('mysql1')</copy>
     ```
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>>
-    ```js
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
     <copy>rs.status()</copy>
     ```
 
@@ -503,8 +474,8 @@ In this lab, you will:
 
 5. You can now close the MySQL Shell connection
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>>
-    ```js
+    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    ```
     <copy>\q</copy>
     ```
 

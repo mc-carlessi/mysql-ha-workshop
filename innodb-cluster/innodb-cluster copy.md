@@ -95,7 +95,7 @@ In this lab, you will:
 
 ## Task 2: Prepare instances for the cluster
 
-1. First we dissolve the existing ReplicaSet. Remember to switch to \js mode and retrieve ReplicaSet connection  
+1. First we dissolve the existing replicaset. Rememebr to swith to \js mode and retrieve ReplicaSet connection  
 
     **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
     ```
