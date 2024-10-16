@@ -30,18 +30,13 @@ This lab assumes you have:
 ### Lab standard
 
 Pay attention to the prompt, to know where execute the commands 
-* ![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>  
-  The command must be executed in the Operating System shell
-* ![#1589F0](https://via.placeholder.com/15/1589F0/000000?text=+) mysql>  
-  The command must be executed in a client like MySQL, MySQL Shell or similar tool
-* ![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>  
-  The command must be executed in MySQL shell
-  
-## Task 1: Install MySQL Enterprise Edition using Linux RPM's
 
+
+## Task 1: Install MySQL Enterprise Edition using Linux RPM's
 
 1. Connect to **app-srv** instance
 
+    <span style="color:green">shell></span>
     ```
     <copy>ssh -i ~/.ssh/id_rsa opc@<your_compute_instance_ip></copy>
     ```
@@ -51,43 +46,54 @@ Pay attention to the prompt, to know where execute the commands
 2. We install MySQL Server in a dedicated machine. 
 
   * Let's connect to mysql1 server
+
+    <span style="color:green">shell></span>
     ```
-    <span style="color:green">shell-app-srv$</span> <copy>ssh -i $HOME/sshkeys/id_rsa_mysql1 opc@mysql1</copy>
+    <copy>ssh -i $HOME/sshkeys/id_rsa_mysql1 opc@mysql1</copy>
     ```
 
   * verify that you are connected to mysql1
 
+    <span style="color:green">shell></span>
     ```
-    <span style="color:green">shell-app-srv$</span> <copy>hostname</copy>
+    <copy>hostname</copy>
     ```
 
-We have the required software available in **/workshop** directory.
+  We have the required software available in **/workshop** directory.
 
 3. Now install the RPM's from /workshop/linux/MySQL_server_rpms.
 
- **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
-  ```
-  <copy>cd /workshop/linux/MySQL_server_rpms</copy>
-  ```
-  ```
-  <copy>ls -l</copy>
-  ```
-  ```
-  <copy>sudo yum -y install *.rpm</copy>
-  ```
+    <span style="color:green">shell></span>
+    ```
+    <copy>cd /workshop/linux/MySQL_server_rpms</copy>
+    ```
+
+    <span style="color:green">shell></span>
+    ```
+    <copy>ls -l</copy>
+    ```
+
+    <span style="color:green">shell></span>
+    ```
+    <copy>sudo yum -y install *.rpm</copy>
+    ```
 
 4. Now we install the new MySQL Shell client rpm.
 
- **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
-  ```
-  <copy>cd /workshop/linux/</copy>
-  ```
-  ```
-  <copy>ls -l mysql-shell*.rpm</copy>
-  ```
-  ```
-  <copy>sudo yum -y install mysql-shell*.rpm</copy>
-  ```
+    <span style="color:green">shell></span>
+    ```
+    <copy>cd /workshop/linux/</copy>
+    ```
+
+    <span style="color:green">shell></span>
+    ```
+    <copy>ls -l mysql-shell*.rpm</copy>
+    ```
+
+    <span style="color:green">shell></span>
+    ```
+    <copy>sudo yum -y install mysql-shell*.rpm</copy>
+    ```
 
 
 ## Task 2: Start and test MySQL Enterprise Edition Install
@@ -95,19 +101,19 @@ We have the required software available in **/workshop** directory.
 
 1.	Start your new mysql instance
 
- **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
+    <span style="color:green">shell></span>
     ```
     <copy>sudo systemctl start mysqld</copy>
     ```
 
 2.	Verify that process is running and listening on the default ports (3306 for MySQL standard protocol and 33060 for MySQL XDev protocol)
 
-  **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
+    <span style="color:green">shell>
     ```
-    <copy>ps -ef | grep mysqld</copy>
+    </span> <copy>ps -ef | grep mysqld</copy>
     ```
 
-  **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
+    <span style="color:green">shell></span>
     ```
     <copy>netstat -an | grep 3306</copy>
     ```
@@ -115,76 +121,77 @@ We have the required software available in **/workshop** directory.
 
 3.	Another way is searching the message “ready for connections” in error log as one of the last 
 
-  **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
+    <span style="color:green">shell></span>
     ```
     <copy>sudo grep -i ready /var/log/mysqld.log</copy>
     ```
 
 4.	Retrieve root password for first login:
 
-  **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
+    <span style="color:green">shell></span>
     ```
     <copy>sudo grep -i 'temporary password' /var/log/mysqld.log</copy>
     ```
 
 5. Login to the the mysql-enterprise, change temporary password and check instance the status
 
-    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
-     ```
+    <span style="color:green">shell></span>
+    ```
     <copy>mysqlsh root@localhost</copy>
     ```
 
 6. Create New Password for MySQL Root
 
- **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
     ```
     <copy>ALTER USER 'root'@'localhost' IDENTIFIED BY 'Welcome1!';</copy>
     ```
 
- **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
     ```
     <copy>\status</copy>
     ```
 
 7.	Create a new administrative user called 'admin' with remote access and full privileges
 
- **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
     ```
     <copy>CREATE USER 'admin'@'%' IDENTIFIED BY 'Welcome1!';</copy>
     ```
 
- **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
     ```
     <copy>GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%' WITH GRANT OPTION;</copy>
     ```
 
- **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
     ```
     <copy>\quit</copy>
     ```
 
 8.	Login as the new user, saving the password. MySQL Shell save the password in a secure file (mysql_config_editor is the default) and set history autosave
 
-  **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
+    <span style="color:green">shell></span>
     ```
-  <copy>mysqlsh admin@127.0.0.1</copy>
-  ```
+    <copy>mysqlsh admin@127.0.0.1</copy>
+    ```
 
- **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
     ```
     <copy>\option -l</copy>
     ```
 
- **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
     ```
     <copy>\option --persist history.autoSave true</copy>
     ```
 
- **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
     ```
     <copy>\option history.autoSave</copy>
     ```
- **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>**
+
+    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
     ```
     <copy>\quit</copy>
     ```
@@ -193,29 +200,29 @@ We have the required software available in **/workshop** directory.
 
 1. Import the employees demo database that is in /workshop/databases folder.
 
-  **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
+    <span style="color:green">shell></span>
     ```
     <copy>cd /workshop/databases/employees/</copy>
     ```
 
-  **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
+    <span style="color:green">shell></span>
     ```
     <copy>mysqlsh admin@127.0.0.1 < ./employees.sql</copy>
     ```
 
 2. Create now a generic user with access to our sample database
 
-  **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
+    <span style="color:green">shell></span>
     ```
     <copy>mysqlsh admin@127.0.0.1</copy>
     ```
 
-  **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>** 
-
+    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
     ```
     <copy>CREATE USER appuser@'%' IDENTIFIED BY 'Welcome1!';</copy>
     ```
 
+    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
     ```
     <copy>GRANT ALL ON employees.* TO appuser@'%';</copy>
     ```
@@ -223,37 +230,50 @@ We have the required software available in **/workshop** directory.
 ## Task 4: Learn Useful SQL Statements
 
 1. You can check the values of a specific variable, like the version of your server to know if it's updated to last release or not  
-    **![#ff9933](https://via.placeholder.com/15/ff9933/000000?text=+) mysqlsh>** 
+
+    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
     ```
     <copy>SHOW VARIABLES LIKE "%version%";</copy>
     ```
 
 2. InnoDB provides the best Storage Engine in the general use case. it's also the one required for ReplicaSet and InnoDB Cluster. You can check if all there are tables in a different format (of course, excluding system schemas) using this query
 
-    * First let's create a MyISAM table
+  * First let's create a MyISAM table
+
+    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
     ```
     <copy>CREATE TABLE employees.pets (id INT, pet varchar(50)) ENGINE=myisam;</copy>
     ```
+
+    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
     ```
     <copy>INSERT INTO employees.pets values(1,'dog'),(2,'cat'),(2,'bunny');</copy>
     ```
+
+    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
     ```
     <copy>SELECT * FROM employees.pets;</copy>
     ```
 
-    * Then search the non-InnoDB tables
+  * Then search the non-InnoDB tables
+
+    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
     ```
     <copy>SELECT table_schema table_name, engine
     FROM INFORMATION_SCHEMA.TABLES 
     WHERE engine <> 'InnoDB' AND table_schema NOT IN ('mysql','information_schema', 'sys', 'performance_schema', 'mysql_innodb_cluster_metadata');</copy>
     ```
 
-    * Now we can convert the table to innoDB format
+  * Now we can convert the table to innoDB format
+  
+    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
     ```
     <copy>ALTER TABLE employees.pets ENGINE=innodb;</copy>
     ```
 
 3. It's a best practice and a requirement to have a Primary Key in each table. You can search tables without PK with this query
+  
+    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
     ```
     <copy>SELECT i.TABLE_ID, t.NAME
     FROM INFORMATION_SCHEMA.INNODB_INDEXES i JOIN INFORMATION_SCHEMA.INNODB_TABLES t ON (i.TABLE_ID = t.TABLE_ID)
@@ -262,12 +282,14 @@ We have the required software available in **/workshop** directory.
 
 4. You can now exit from MySQL Shell
 
+    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
     ```
     <copy>\q</copy>
     ```
 
 5. Close now your connection to mysql1, to return on app-srv
 
+    <span style="color:green">shell></span>
     ```
     <copy>exit</copy>
     ```

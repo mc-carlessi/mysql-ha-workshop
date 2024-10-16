@@ -27,11 +27,11 @@ In this lab, you will be guided through the following tasks:
 1. If not already connected with SSH, on Command Line, connect to the Compute instance using SSH ... be sure replace the  "private key file"  and the "new compute instance ip"
 
     **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>**
-     ```bash
+    ```bash
     <copy>ssh -i ~/.ssh/id_rsa opc@<your_compute_instance_ip></copy>
-     ```
+    ```
 
-2. Verofy that you are now working on app-srv
+2. Verify that you are now working on app-srv
 
     ```bash
     <copy>hostname</copy>
@@ -127,9 +127,8 @@ In this lab, you will be guided through the following tasks:
 
 1. Create dbtest.php file
 
-    **![#00cc00](https://via.placeholder.com/15/00cc00/000000?text=+) shell>**
     ```bash
-    <copy>sudo nano dbtest.php</copy>
+    <span style="color:green">shell></span> <copy>sudo nano dbtest.php</copy>
     ```
 
 2. Add the following code to the editor and save the file (ctr + o) (ctl + x)
@@ -142,43 +141,53 @@ In this lab, you will be guided through the following tasks:
     <body>
 
     <?php
-    $DB_SERVER='mysql1:3306';
-    $DB_USERNAME='appuser';
-    $DB_PASSWORD='Welcome1!';
-    $DB_NAME='employees';
+    // Connection info
+    $servername = "127.0.0.1:6446";
+    $username = "appuser";
+    $password = "Welcome1!";
+    $dbname = "employees";
 
-    $retries = 30;
+    // Connection to database function
+    function connectToDatabase() {
+        global $servername, $username, $password, $dbname;
+        $conn = null;
+        $max_retries = 15;
+        $retry_delay = 2; // secondi
 
-    $i=0;
-    while ($i <= $retries) {
-    $link = mysqli_connect($DB_SERVER, $DB_USERNAME, $DB_PASSWORD, $DB_NAME);
-    if($link === false){
-        if($i <= $retries) {
-        sleep(1);
-        $i++;
-        } else {
-        break;
+        for ($i = 0; $i < $max_retries; $i++) {
+            try {
+                $conn = new mysqli($servername, $username, $password, $dbname);
+                if ($conn->connect_error) {
+                    throw new Exception("Connection failed: " . $conn->connect_error);
+                }
+                break; // If connection is fine, exit from the loop
+            } catch (Exception $e) {
+                echo "Connection failed (temptative " . ($i+1) . "): " . $e->getMessage() . "<br>";
+                sleep($retry_delay);
+            }
         }
-    } else {
-        echo 'Connection info: <b>' . mysqli_get_host_info($link) .'</b><br>';
-        echo "Retries: " . $i . "<br>";
+
+        return $conn;
+    }
+
+    // Call connection function
+    $conn = connectToDatabase();
+
+    if ($conn) {
+        echo "<br>";
+        echo 'Connection info: <b>' . mysqli_get_host_info($conn) .'</b><br>';
         $query = "SELECT @@hostname";
-        if ($stmt = $link->prepare($query)) {
+        if ($stmt = $conn->prepare($query)) {
             $stmt->execute();
             $stmt->bind_result($hostname);
             $stmt->fetch();
             echo "Hostname: <b>" . $hostname ."</b><br>";
         }
-        $stmt->close();
-        break;
-    }
 
-    if($link === false){
-    die("ERROR: Could not connect. " . mysqli_connect_error());
+        $conn->close();
+    } else {
+        echo "Impossible to connect to database";
     }
-
-    }
-    ?>
 
     </body>
     </html>
