@@ -311,8 +311,8 @@ In this lab, you will:
     <copy>\connect csadmin@mysql1</copy>
     ```
 
-2. Create the cluster, using the option EVENTUAL for primary failover.
-   By default the cluster operate in BEFORE_ON_PRIMARY_FAILOVER, choose the option that better fits your SLA requirements
+2. We now create the cluster using the non default option **EVENTUAL** for primary failover.
+   The default is **BEFORE\_ON\_PRIMARY\_FAILOVER**, choose the option that better fits your SLA requirements
 
     <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>>
     ```js
@@ -725,8 +725,8 @@ In this lab, you will:
     To check the full rules see [here](https://dev.mysql.com/doc/mysql-router/9.0/en/router-read-write-splitting-statements.html).
     Return to appuser connection and close it
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>>
-    ```js
+    <span style="color:blue">mysql></span>
+    ```sql
     <copy>\q</copy>
     ```
 
@@ -782,12 +782,16 @@ In this lab, you will:
     Example: http://129.213.167..../dbtest.php
 
 4. Repeat failover test.
-   Return to shell, and use it to kill the instance on mysql1.
-   To execute the kill command, use the mysqld process ID in stored in /var/run/mysqld/mysqld.pid file (here we can do it in a single command)
+   Return to shell, verify that you are on mysql1 and kill the MySQL Server instance.
 
     <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>>
     ```js
     <copy>\q</copy>
+    ```
+
+    <span style="color:green">shell></span>
+    ```bash
+    <copy>hostname</copy>
     ```
 
     <span style="color:green">shell></span>
