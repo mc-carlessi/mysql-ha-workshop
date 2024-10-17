@@ -78,6 +78,11 @@ Pay attention to the prompt, to know where execute the commands
     <copy>sudo yum -y install *.rpm</copy>
     ```
 
+    <span style="color:green">shell></span>
+    ```
+    <copy>sudo systemctl enable mysqld</copy>
+    ```
+
 4. Now we install the new MySQL Shell client rpm.
 
     <span style="color:green">shell></span>
@@ -133,7 +138,7 @@ Pay attention to the prompt, to know where execute the commands
     <copy>sudo grep -i 'temporary password' /var/log/mysqld.log</copy>
     ```
 
-5. Login to the the mysql-enterprise, change temporary password and check instance the status
+5. Login to the the mysql-enterprise, change temporary password and check instance the status (***DON'T SAVE THE PASSWORD***)
 
     <span style="color:green">shell></span>
     ```bash
@@ -169,7 +174,7 @@ Pay attention to the prompt, to know where execute the commands
     <copy>\quit</copy>
     ```
 
-8.	Login as the new user, saving the password. MySQL Shell save the password in a secure file (mysql_config_editor is the default) and set history autosave
+8.	Login as the new user, save the password. MySQL Shell save the password in a secure file (mysql_config_editor is the default) and set history autosave
 
     <span style="color:green">shell></span>
     ```bash

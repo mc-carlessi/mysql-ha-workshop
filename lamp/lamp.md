@@ -130,7 +130,7 @@ In this lab, you will be guided through the following tasks:
 
     <span style="color:green">shell></span> 
     ```bash
-    <copy>sudo nano dbtest.php</copy>
+    <copy>sudo nano /var/www/html/dbtest.php</copy>
     ```
 
 2. Add the following code to the editor and save the file (ctr + o) (ctl + x)
@@ -143,7 +143,7 @@ In this lab, you will be guided through the following tasks:
 
     <?php
     // Connection info
-    $servername = "mysql1";
+    $servername = "127.0.0.1:6446";
     $username = "appuser";
     $password = "Welcome1!";
     $dbname = "employees";
@@ -182,8 +182,6 @@ In this lab, you will be guided through the following tasks:
             $stmt->execute();
             $stmt->bind_result($hostname);
             $stmt->fetch();
-            
-            // print the hostname of the connected instance
             echo "Hostname: <b>" . $hostname ."</b><br>";
         }
 
@@ -191,6 +189,8 @@ In this lab, you will be guided through the following tasks:
     } else {
         echo "Impossible to connect to database";
     }
+
+    ?>
 
     </body>
     </html>
