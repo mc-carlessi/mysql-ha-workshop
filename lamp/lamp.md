@@ -153,17 +153,18 @@ In this lab, you will be guided through the following tasks:
         global $servername, $username, $password, $dbname;
         $conn = null;
         $max_retries = 15;
-        $retry_delay = 2; // secondi
+        $retry_delay = 2; // seconds
 
         for ($i = 0; $i < $max_retries; $i++) {
             try {
                 $conn = new mysqli($servername, $username, $password, $dbname);
+                // In case of connection errors print the attempt
                 if ($conn->connect_error) {
                     throw new Exception("Connection failed: " . $conn->connect_error);
                 }
                 break; // If connection is fine, exit from the loop
             } catch (Exception $e) {
-                echo "Connection failed (temptative " . ($i+1) . "): " . $e->getMessage() . "<br>";
+                echo "Connection failed (attempt " . ($i+1) . "): " . $e->getMessage() . "<br>";
                 sleep($retry_delay);
             }
         }
@@ -171,12 +172,14 @@ In this lab, you will be guided through the following tasks:
         return $conn;
     }
 
-    // Call connection function
+    // Call the connection function
     $conn = connectToDatabase();
 
     if ($conn) {
         echo "<br>";
+        // Print php connection
         echo 'Connection info: <b>' . mysqli_get_host_info($conn) .'</b><br>';
+        // Print working server
         $query = "SELECT @@hostname";
         if ($stmt = $conn->prepare($query)) {
             $stmt->execute();
