@@ -243,7 +243,7 @@ In this lab, you will:
 
     <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>>
     ```js
-    <copy>dba.configureReplicaSetInstance('admin@mysql1', {clusterAdmin: "'csadmin'@'%'"});</copy>
+    <copy>dba.configureInstance('admin@mysql1', {clusterAdmin: "'csadmin'@'%'"});</copy>
     ```
 
     > **OUTPUT EXAMPLE: FIX ERRORS**
@@ -294,12 +294,12 @@ In this lab, you will:
 
     <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>>
     ```js
-    <copy>dba.configureReplicaSetInstance('admin@mysql2', {clusterAdmin: "'csadmin'@'%'"});</copy>
+    <copy>dba.configureInstance('admin@mysql2', {clusterAdmin: "'csadmin'@'%'"});</copy>
     ```
 
     <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>>
     ```js
-    <copy>dba.configureReplicaSetInstance('admin@mysql3', {clusterAdmin: "'csadmin'@'%'"});</copy>
+    <copy>dba.configureInstance('admin@mysql3', {clusterAdmin: "'csadmin'@'%'"});</copy>
     ```
 
 ## Task 3: Create Cluster 
@@ -316,7 +316,7 @@ In this lab, you will:
 
     <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>>
     ```js
-    <copy>var cluster = dba.createCluster("myCluster", {consistency:'EVENTUAL',paxosSingleLeader:true})</copy>
+    <copy>var cluster = dba.createCluster("myCluster", {consistency:'EVENTUAL', paxosSingleLeader:true})</copy>
      ```
 
    **OUTPUT EXAMPLE: CLUSTER CREATED**
@@ -383,7 +383,7 @@ In this lab, you will:
     
     <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>>
     ```js
-    <copy>cluster.addInstance('admin@mysql2')</copy>
+    <copy>cluster.addInstance('mysql2')</copy>
     ```
 
    **OUTPUT EXAMPLE: ADD SECOND INSTANCE (EXTRACT)**
@@ -450,7 +450,7 @@ In this lab, you will:
 
     <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>>
     ```js
-    <copy>cluster.addInstance('admin@mysql3', {memberWeight:30})</copy>
+    <copy>cluster.addInstance('mysql3', {memberWeight:30})</copy>
     ```
 
     **OUTPUT EXAMPLE: ADD 3 INSTANCE GTID WARNING (EXTRACT)**
