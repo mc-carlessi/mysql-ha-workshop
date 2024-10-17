@@ -78,11 +78,6 @@ Pay attention to the prompt, to know where execute the commands
     <copy>sudo yum -y install *.rpm</copy>
     ```
 
-    <span style="color:green">shell></span>
-    ```
-    <copy>sudo systemctl enable mysqld</copy>
-    ```
-
 4. Now we install the new MySQL Shell client rpm.
 
     <span style="color:green">shell></span>

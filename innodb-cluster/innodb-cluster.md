@@ -48,7 +48,7 @@ In this lab, you will:
     WHERE i.NAME='GEN_CLUST_INDEX';</copy>
     ```
 
-    > Output, where table-id is probably different in your installation 
+    > ** OUTPUT SAMPLE. Please note that table-id may be different in your instance 
     
     ```
     +----------+----------------+
@@ -192,15 +192,20 @@ In this lab, you will:
     <copy>GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%' WITH GRANT OPTION;</copy>
     ```
 
-8. Close the SSH session to mysql3 and return to app-srv. 
+9. Close the SSH session to mysql3 and return to app-srv. 
    **Keep** this connection **open on app-srv** to use it later on
-
-9. Return to administrative connection and check mysql1 configuration (we may have or not errors)
 
     <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
     ```sql
-    <copy>\js</copy>
+    <copy>\q</copy>
     ```
+
+    <span style="color:green">shell></span> 
+     ```bash
+    <copy>exit</copy>
+    ```
+
+10. Return to administrative connection and check mysql1 configuration (we may have or not errors)
 
     <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>>
     ```js
@@ -233,7 +238,7 @@ In this lab, you will:
     }
     ```
 
-10. In case of errors, we use MySQL Shell to fix them.
+11. In case of errors, we use MySQL Shell to fix them.
    We now **force the reconfiguration** to create the a dedicated account just for cluster administration (please accept all changes and the reboot) 
 
     <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>>
@@ -266,16 +271,26 @@ In this lab, you will:
     ```
 
    **OUTPUT EXAMPLE: NO CONFIGURATION ERRORS**
-    ```
-    ...
-    The instance 'mysql1' is valid to be used in an InnoDB cluster.
+    ```text
+    Configuring MySQL instance at mysql1:3306 for use in an InnoDB ReplicaSet...
 
-    {
-        "status": "ok"
-    }
+    This instance reports its own address as mysql1:3306
+    Clients and other cluster members will communicate with it through this address by default. If this is not correct, the report_host MySQL system variable should be changed.
+    Password for new account: *********
+    Confirm password: *********
+
+    applierWorkerThreads will be set to the default value of 4.
+
+    Creating user csadmin@%.
+    Account csadmin@% was successfully created.
+
+
+    The instance 'mysql1:3306' is valid for InnoDB ReplicaSet usage.
+
+    Successfully enabled parallel appliers.
     ```
 
-11. Repeat the command on mysql2 and mysql3
+12. Repeat the command on mysql2 and mysql3
 
     <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>>
     ```js
@@ -707,7 +722,7 @@ In this lab, you will:
     ```
 
 9. We can also test the read/write split port (**6450**).
-    To check teh full rules see ![here](https://dev.mysql.com/doc/mysql-router/9.0/en/router-read-write-splitting-statements.html).
+    To check the full rules see [here](https://dev.mysql.com/doc/mysql-router/9.0/en/router-read-write-splitting-statements.html).
     Return to appuser connection and close it
 
     <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>>
@@ -777,15 +792,10 @@ In this lab, you will:
 
     <span style="color:green">shell></span>
     ```bash
-    <copy>ssh -i $HOME/sshkeys/id_rsa_mysql1 opc@mysql1</copy>
-    ```
-
-    <span style="color:green">shell></span>
-    ```bash
     <copy>sudo kill -9 $( sudo cat /var/run/mysqld/mysqld.pid )</copy>
     ```
 
-5. As soon as possible, from your local machine, refresh dbtest.php page. Please wait that page reconnect to the new primary
+5. As soon as possible, from your local machine, refresh dbtest.php page. ***Please wait*** that page reconnect to the new primary
 
     Example: http://129.213.167..../dbtest.php
 

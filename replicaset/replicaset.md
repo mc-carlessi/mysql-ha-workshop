@@ -85,6 +85,16 @@ In this lab, you will:
 8. Close the SSH session to mysql2 and return to app-srv. 
    **Keep** this connection **open on app-srv** to use it later on
 
+    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
+    ```
+    <copy>\q</copy>
+    ```
+
+    <span style="color:green">shell></span> 
+     ```
+    <copy>exit</copy>
+    ```
+
 
 ## Task 2: Install MySQL client on app-srv
 1. Using the existing SSH connection, install theMySQL Client on app-srv
@@ -144,7 +154,7 @@ In this lab, you will:
     <copy>dba.configureReplicaSetInstance('admin@mysql2', {clusterAdmin: "'rsadmin'@'%'"});</copy>
     ```
 
-    > Output
+    > **OUTPUT SAMPLE**
     
     ```text
     Password for new account: *********
@@ -156,7 +166,7 @@ In this lab, you will:
     Account rsadmin@% was successfully created.
 
 
-    The instance 'mysql3:3306' is valid for InnoDB ReplicaSet usage.
+    The instance 'mysql1:3306' is valid for InnoDB ReplicaSet usage.
 
     Successfully enabled parallel appliers.
     ```
@@ -221,7 +231,8 @@ In this lab, you will:
     }
     ```
 
-7. Add mysql2 as replica instance for the ReplicaSet. Please note that clone is used to copy data from mysql1 to mysql2, and that the user to connect to mysql2 is the one of the actual connection
+7. Add mysql2 as replica instance for the ReplicaSet.
+    Please note that clone is used to copy data from mysql1 to mysql2, and that the user to connect to mysql2 is the one of the actual connection
 
     <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>>
     ```js
@@ -333,14 +344,7 @@ In this lab, you will:
     <copy>netstat -an | grep 644</copy>
     ```
 
-7. Install on app-srv the MySQL client and MySQL Shell to test MySQL Router
-
-    <span style="color:green">shell></span> 
-    ```bash
-    <copy>sudo yum install -y /workshop/linux/client/*.rpm</copy>
-    ```
-
-8. Connect to read/write port and verify how it works
+7. Connect to read/write port and verify how it works
 
     <span style="color:green">shell></span> 
     ```bash
@@ -372,7 +376,7 @@ In this lab, you will:
     <copy>\q</copy>
     ```
 
-9. Connect to read only port and verify how it works (please note that writes return an error)
+8. Connect to read only port and verify how it works (please note that writes return an error)
 
     <span style="color:green">shell></span> 
     ```bash
@@ -391,7 +395,7 @@ In this lab, you will:
 
     <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
     ```sql
-    <copy>insert into employees.pets values(4,'t-rex');</copy>
+    <copy>insert into employees.pets values(4,'horse');</copy>
     ```
 
     <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
@@ -404,7 +408,7 @@ In this lab, you will:
     <copy>\q</copy>
     ```
 
-10. Now we test primary/secondary switchover. First Reconnect to read/write port
+9. Now we test primary/secondary switchover. First Reconnect to read/write port
 
     <span style="color:green">shell></span> 
     ```absh
@@ -416,7 +420,7 @@ In this lab, you will:
     <copy>select @@hostname;</copy>
     ```
 
-11. Return to admin mysqlsh and switch primary and secondary
+10. Return to admin mysqlsh and switch primary and secondary
 
     <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:yellow">JS</span>>
     ```js
@@ -428,7 +432,7 @@ In this lab, you will:
     <copy>rs.status()</copy>
     ```
 
-12. Switch to appuser connection and retry to use it (first connection fails)
+11. Switch to appuser connection and retry to use it (first connection fails)
 
     <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
     ```sql
@@ -450,7 +454,7 @@ In this lab, you will:
     <copy>select * from employees.pets;</copy>
     ```
 
-13. You can now close the appuser connection
+12. You can now close the appuser connection
 
     <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
     ```sql
