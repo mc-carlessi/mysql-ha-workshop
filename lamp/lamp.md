@@ -143,7 +143,7 @@ In this lab, you will be guided through the following tasks:
 
     <?php
     // Connection info
-    $servername = "127.0.0.1:6446";
+    $servername = "mysql1";
     $username = "appuser";
     $password = "Welcome1!";
     $dbname = "employees";
