@@ -108,7 +108,8 @@ In this lab, you will:
         <copy>Select *,added_pk from employees.pets;</copy>
         ```
 
-5. To automatically fix the creation of tables without primary key, we can also enable GTID mode (Generated Primary Invisible Keys)
+5. To automatically fix the creation of tables without primary key, we can also enable GTID mode (Generated Primary Invisible Keys).
+    We set the variable on mysql1 only, but in the real life remember to ***set in all the instances***.
 
     * We enable the GIPK mode
         <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
