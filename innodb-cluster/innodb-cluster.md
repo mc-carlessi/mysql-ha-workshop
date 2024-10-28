@@ -70,6 +70,8 @@ In this lab, you will:
     <copy>alter table employees.pets add column added_pk bigint unsigned NOT NULL primary key auto_increment invisible;</copy>
     ```
 
+5. Now let's see the new table structure
+
     <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
     ```sql
     <copy>desc employees.pets;</copy>
@@ -80,25 +82,61 @@ In this lab, you will:
     <copy>show create table employees.pets\G</copy>
     ```
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
-    ```sql
-    <copy>Select * from employees.pets;</copy>
-    ```
+5. Now let's play with the table
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
-    ```sql
-    <copy>insert into employees.pets values(5,'canary');</copy>
-    ```
+    * The new column is not visible with a generic query
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
-    ```sql
-    <copy>Select * from employees.pets;</copy>
-    ```
+        <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
+        ```sql
+        <copy>Select * from employees.pets;</copy>
+        ```
 
-    <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
-    ```sql
-    <copy>Select *,added_pk from employees.pets;</copy>
-    ```
+        <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
+        ```sql
+        <copy>insert into employees.pets values(5,'canary');</copy>
+        ```
+
+        <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
+        ```sql
+        <copy>Select * from employees.pets;</copy>
+        ```
+
+    * But you can read it with an explicit reference
+
+        <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
+        ```sql
+        <copy>Select *,added_pk from employees.pets;</copy>
+        ```
+
+5. To automatically fix the creation of tables without primary key, we can also enable GTID mode (Generated Primary Invisible Keys)
+
+    * We enable the GIPK mode
+        <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
+        ```sql
+        <copy>SELECT @@sql_generate_invisible_primary_key;</copy>
+        ```
+
+        <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
+        ```sql
+        <copy>SET PERSIST sql_generate_invisible_primary_key=1;</copy>
+        ```
+
+        <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
+        ```sql
+        <copy>\q</copy>
+        ```
+
+    * Now we create a table without primary key
+
+        <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
+        ```sql
+        <copy>CREATE TABLE employees.test_table (c1 VARCHAR(50), c2 INT);</copy>
+        ```
+
+        <span style="color:blue">My</span><span style="color: orange">SQL </span><span style="background-color:orange">SQL</span>>
+        ```sql
+        <copy>SHOW CREATE TABLE employees.test_table\G</copy>
+        ```
 
 ## Task 2: Prepare instances for the cluster
 
