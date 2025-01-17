@@ -1,5 +1,5 @@
 {
-    "workshoptitle": "MySQL Enterprise Edition - Security Workshop - Student",
+    "workshoptitle": "MySQL Enterprise Edition - High Availability Workshop - Student",
     "include": {"starter-file.sql":"../../data-load/files/starter-file.sql",
                 "sample.json":"../../data-load/files/sample.json",
                 "step2.md":"../../data-load/files/step2.md"},
